@@ -1,0 +1,33 @@
+steps:
+
+  - id: "Install Go"
+    name: 'gcr.io/cloud-builders/go'
+    args: ['install', 'looping']
+    env: ['GOPATH=./go']
+
+  - id: "Test Go App"
+    name: 'gcr.io/cloud-builders/go'
+    args: ['test', 'looping']
+    env: ['GOPATH=./go']
+
+  - id: "Build Docker Image"
+    name: 'gcr.io/cloud-builders/docker'
+    args: ['build', '--tag=jhonnybail/go-hpa', '-f', './go/.docker/build/Dockerfile', './go']
+
+  - id: "Docker Hub Login"
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker login --username=$$USERNAME --password=$$PASSWORD']
+    secretEnv: ['USERNAME', 'PASSWORD']
+
+  - id: "Push to Docker Hub"
+    name: 'gcr.io/cloud-builders/docker'
+    entrypoint: 'bash'
+    args: ['-c', 'docker push jhonnybail/go-hpa']
+
+availableSecrets:
+   secretManager:
+   - versionName: projects/573721289204/secrets/docker-password/versions/1
+     env: 'PASSWORD'
+   - versionName: projects/573721289204/secrets/docker-username/versions/1
+     env: 'USERNAME'

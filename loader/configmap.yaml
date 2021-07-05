@@ -1,0 +1,10 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: loader-sh
+data:
+  loader.sh: |
+
+    #!/bin/sh
+
+    while true; do wget -q -O- http://go-hpa.default.svc.cluster.local:8000; done;

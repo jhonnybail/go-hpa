@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: Pod 
+metadata: 
+  name: pod-loader
+spec:
+  containers:
+    - name: pod-loader
+      image: busybox
+      command: ['sh','/etc/go-hpa/loader.sh']
+      volumeMounts:
+        - mountPath: /etc/go-hpa
+          name: loader-sh
+          readOnly: true
+
+  volumes:
+    - name: loader-sh
+      configMap:
+        name: loader-sh
+        items:
+          - key: loader.sh
+            path: loader.sh
